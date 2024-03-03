@@ -129,7 +129,7 @@ Because the string, array, and regex values are mutually exclusive within an awk
 Here are the zvalue and zstring structures:
 {: .lh-tight }
 ```c
-// zvalue: the main awk value type
+// zvalue: the main awk value type!
 // Can be number or string or both, or else map (array) or regex
 struct zvalue {
   unsigned flags;
