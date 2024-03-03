@@ -39,7 +39,7 @@ I generated 8500 lines of data that looks like:
 ...
 ```
 And a test:
-```
+```awk
 BEGIN{ RS = "w(x[^z]*z\n)?" }
 1
 ```

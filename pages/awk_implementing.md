@@ -127,9 +127,8 @@ A regex is a pointer to a `regex_t` compiled POSIX regex.
 
 Because the string, array, and regex values are mutually exclusive within an awk variable, I use a union to hold them.
 Here are the zvalue and zstring structures:
-{: .lh-tight }
 ```c
-// zvalue: the main awk value type!
+// zvalue: the main awk value type.
 // Can be number or string or both, or else map (array) or regex
 struct zvalue {
   unsigned flags;
@@ -157,7 +156,7 @@ This is the only non-standard aspect of `wak` code, as far as I know.
 With all gcc warning options turn on, it compiles with no other warnings.
 
 The stack, several compiler tables, and also the actual value structures of the arrays are held in expanding sequential list structures called `zlist`:
-```
+```c
 // zlist: expanding sequential list
 struct zlist {
   char *base, *limit, *avail;
@@ -170,7 +169,7 @@ The list is reallocated to be 50% larger as needed as it fills up.
 
 The map (awk array) structure is the `zmap` hash table:
 
-```
+```c
 // zmap: Mapping data type for arrays; a hash table. Values in hash are either
 // 0 (unused), -1 (marked deleted), or one plus the number of the zmap slot
 // containing a key/value pair. The zlist slot entries are numbered from 0 to
@@ -189,7 +188,7 @@ struct zmap {
 
 The `zlist slot` member holds the actual values of the hash table:
 
-```
+```c
 // Elements of the hash table (key/value pairs)
 struct zmap_slot {
   int hash;       // store hash key to speed hash table expansion

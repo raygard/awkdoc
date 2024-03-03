@@ -16,7 +16,7 @@ Maybe a yacc expert could know.
 
 If you only know what the _Awk book_ (by A, K, & W, 1st or 2nd Ed.) says, you'd be missing some details.
 For example, the Awk book and many other documents say a `for` statement is:
-```
+```awk
 for (expression₁; expression₂; expression₃)
     statement
 ```
@@ -58,7 +58,7 @@ The rules are similar in C, and a statement like this is a syntax error in C.
 #### Case 2
 
 Another odd one, adapted from gawk test `getline.awk`: running this in bash (as e.g. `./getline_test1.sh gawk`):
-```
+```bash
 #!/usr/bin/bash
 awk=$1
 echo -e 'A\nB\nC'|$awk 'BEGIN {
@@ -76,7 +76,7 @@ with any of gawk, nawk, nnawk, goawk, bbawk gives the same result:
 ```
 
 But running this (as `getline_test2.awk`):
-```
+```awk
 BEGIN {
 	x = y = "!"
 	cmd = "echo A"; a = (cmd | getline x y); close(cmd); print a, x

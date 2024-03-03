@@ -129,7 +129,7 @@ In `BEGIN{f(a); g(a)}; function f(x){x[1]=3}; function g(x){print x[1]}`, goawk 
 
 But worse, it is possible for a function to be called with a scalar sometimes and an array (as the same parameter) other times.
 For example:
-```
+```awk
 BEGIN{f(1); f(0)}
 function f(a, b){if (a) g(b); else {h(b); i(b)}}
 function g(x){print x}
