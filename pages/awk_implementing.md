@@ -127,6 +127,7 @@ A regex is a pointer to a `regex_t` compiled POSIX regex.
 
 Because the string, array, and regex values are mutually exclusive within an awk variable, I use a union to hold them.
 Here are the zvalue and zstring structures:
+{: .lh-tight }
 ```c
 // zvalue: the main awk value type
 // Can be number or string or both, or else map (array) or regex
