@@ -32,7 +32,8 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  raygard
 
 # Build settings
-remote_theme: just-the-docs/just-the-docs
+#remote_theme: just-the-docs/just-the-docs
+remote_theme: labsyspharm/just-the-docs-lsp
 # theme: "just-the-docs"
 plugins:
   - jekyll-feed
