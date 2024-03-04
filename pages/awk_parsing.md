@@ -61,7 +61,7 @@ Since it is never wrong to put a semicolon before a closing brace, and it cannot
 Then it can use a much simpler grammar structure.
 But you can detect this trick, because it can also make an incorrect program correct!
 
-Try `awk 'BEGIN{while(n-->0);}'` with any awk and it will do nothing silently.
+Try `awk 'BEGIN{while(n-->0);}'` with any awk and it will do nothing, silently.
 But `awk 'BEGIN{while(n-->0)}'` (note missing semicolon empty statement) works in nawk/nnawk but gets a syntax error in gawk, goawk, bbawk, and wak.
 (It also works in mawk, indicating that mawk uses the same lexical hack.)
 
@@ -96,7 +96,7 @@ Then the `>` will be correctly treated as a redirection operator.
 
 The `primary()` function returns the number of expressions in a parentheses-enclosed statement list, or 0 (or -1 for a potential lvalue, that is used to help with the `(1 && a = 2)` problem mentioned in the previous [previous section](./awk_parsing_is_tricky.html)).
 
-The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately a token that can end a print statement ('>', '>>', '|', ';', '}', or newline).
+The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately a token that can end a print statement ('>', '>>', '|', ';', '}', or newline).
 If so, it returns the expression count from `primary()` to `print_stmt()`, otherwise it continues parsing what is expected to be the first (or possibly only) expression for the print statement.
 
 I believe this correctly handles the print/printf statement.
@@ -108,7 +108,7 @@ There are two main data types in awk: scalar and array, maybe three if you count
 Scalars can be numeric (always floating point), string, or both, which might be considered sub-types.
 You may consider some special values as _numeric string_ (defined in POSIX) or _uninitialized_ as sub-types as well.
 Arrays are associative, "subscripted" by string values.
-They are called maps in some other contexts, and I refer to them as maps internally; they are implemented with hash tables in `wak`.
+I often refer to them as maps; they are implemented with hash tables in `wak`.
 
 The scope rules are pretty simple.
 Function formal parameters (variables supplied in the function definition `function _name_(param1, param2,...)`) are local to the function, as far as name scoping is considered.
@@ -142,7 +142,9 @@ But I don't see how that can be determined during compilation of f(a, b) in a on
 I'm curious how this works inside gawk, nnawk and bbawk but not going to look.
 
 In compiling f(a, b), g(b) will pass a scalar and h(b) and i(b) will pass an array.
-In my parser, if a variable appears only as a "bare" variable name in a function call, it is left "untyped". When it is pushed on the stack at runtime, an empty map is attached to it. Then if it is used as a scalar, it is converted to scalar and if it is used as an array it is converted to an array.
+In my parser, if a variable appears only as a "bare" variable name in a function call, it is left "untyped" (actually gets a ZF_MAYBEMAP flag).
+When it is pushed on the stack at runtime, an empty map is attached to it.
+Then if it is used as a scalar, it is converted to scalar and if it is used as an array it is converted to an array.
 
 ### Error recovery
 

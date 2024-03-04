@@ -22,9 +22,10 @@ for (expression₁; expression₂; expression₃)
 ```
 (or any of the three expressions can be empty).
 
-But try this: `awk 'BEGIN{for (; x++<3; print x);}'` (using gawk, nawk, nnawk, or goawk; mawk and bbawk (busybox awk) fail.)
+But try this: `awk 'BEGIN{for (; x++ < 3; print x);}'` (using gawk, nawk, nnawk, or goawk; mawk and bbawk (busybox awk) fail.)
 
 This works because `expression₁` and `expression₃` are actually `simple_statement` which can be an expression, `delete` statement, or `print` statement.
+(This is in both the yacc grammar for nawk/nnawk and in the POSIX reference grammar.)
 Why?
 Maybe no one knows.
 Maybe it somehow made the syntax better for yacc.
@@ -139,7 +140,7 @@ The parentheses here are again notional; an lvalue cannot be in parentheses.
 
 
 #### Case 5
-`BEGIN {a[y]=1;x = y in a + 2;print x}` prints    
+`BEGIN {a[y] = 1; x = y in a + 2; print x}` prints    
 an empty line in bbawk    
 `3` in wak    
 `12` in nnawk/nawk (!)    
@@ -150,10 +151,10 @@ Apparently nnawk/nawk treats the `+ 2` as a string to be concatenated with the `
 
 What causes these peculiarities?
 
-Brian Kernighan has [written](https://awk.dev/awk.spe.pdf) that
+Aho, Weinberger, and Kernighan have [written](https://awk.dev/awk.spe.pdf) that
 > The development of awk was significantly shortened by using UNIX tools. The grammar is specified with yacc; the lexical analysis is done by lex. Using these tools made it easy to vary the syntax of the language during development. 
 
-In [_The Unix Programming Environment_](https://scis.uohyd.ac.in/~apcs/itw/UNIXProgrammingEnvironment.pdf), he and Rob Pike wrote (footnote, p. 254):
+In [_The Unix Programming Environment_](https://scis.uohyd.ac.in/~apcs/itw/UNIXProgrammingEnvironment.pdf), Kernighan and Rob Pike wrote (footnote, p. 254):
 > The yacc message "reduce/reduce conflict" indicates a serious problem, more often the symptom of an outright error in the grammar than an intentional ambiguity.
 
 Compiling One True Awk (nawk/nnawk) gets 85 reduce/reduce conflicts in addition to 44 shift/reduce conflicts.

@@ -45,30 +45,14 @@ BEGIN{ RS = "w(x[^z]*z\n)?" }
 ```
 This did stress them.
 Correct behavior would be to print 1, 2, ... 8500 lines with just the numbers on them.
+
+| Version   | # lines printed | # initial lines correct |
+| --------- | --------------- | ----------------------- |
+| nnawk     | 8501            | 8180                    |
+| wak       | 11048           | 1170                    |
+| mawk      | 8639            | 717                     |
+| goawk     | 9078            | 355                     |
+| gawk      | 12007           | 40                      |
+| bbawk     | 16828           | 25                      |
+
 nnawk did the best, running for 8180 lines before printing a couple of anomalous lines, then ran OK for the rest of the input.
-mawk printed 8639 lines, with the first 717 correct.
-goawk printed 9078 lines, with the first 355 correct.
-wak printed 11048 lines, with the first 1170 correct.
-gawk printed 12007 lines, with the first 40 correct.
-bbawk printed 16828 lines, with the first 25 correct.
-
-wak 1170
-bbawk 25
-goawk 355
-gawk 40
-mawk 717
-nawk 8180
-
-   8501 nnawk
-   8639 mawk
-   9078 goawk
-  11048 wak
-  12007 gawk
-  16828 bbawk
-
-
-
-
-
-
-

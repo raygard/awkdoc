@@ -122,7 +122,7 @@ Each awk value is a `zvalue` `struct`, that can be a scalar, literal regular exp
 A scalar can have a numeric value (C `double`) or a string value or both.
 A string (`zstring`) is a `struct` that is reference counted and can hold an arbitrary number of bytes.
 An array is a pointer to a `zmap` `struct` that holds a pointer to a hash table.
-(I usually refer to the awk array structure as a map.)
+(I often refer to the awk array structure as a map.)
 A regex is a pointer to a `regex_t` compiled POSIX regex.
 
 Because the string, array, and regex values are mutually exclusive within an awk variable, I use a union to hold them.
@@ -150,10 +150,10 @@ struct zstring {
 };
 ```
 
-The anonymous union in the `struct zvalue` is not valid C99, but gcc accepts it, giving a warning with -Wpedantic.
+The anonymous union in the `struct zvalue` is not valid C99, but gcc accepts it, giving a warning with `-Wpedantic`.
 I may fix this, but maybe it just clutters up the code with extra `.z` characters for no really good reason.
 This is the only non-standard aspect of `wak` code, as far as I know.
-With all gcc warning options turn on, it compiles with no other warnings.
+With all gcc warnings turned on, it compiles with no other warnings.
 
 The stack, several compiler tables, and also the actual value structures of the arrays are held in expanding sequential list structures called `zlist`:
 ```c
