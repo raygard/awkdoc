@@ -5,8 +5,6 @@ nav_order: 3
 date:   2024-01-24 05:00:00 -0600
 ---
 
-# Writing an awk
-
 ## Parsing awk is tricky
 
 [//]: # (Markdown comment? First, a bit of a rant about awk syntax.)

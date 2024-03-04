@@ -1,13 +1,11 @@
 ---
-title:  Awk -- implementing regex RS
+title:  Implementing regex RS
 layout: page
 nav_order: 6
 date:   2024-01-24 05:00:00 -0600
 ---
 
-# Writing an awk
-
-## awk -- implementing regex RS
+## Implementing regex RS
 
 The POSIX spec (and the original AWK book) only accepts a single character as the record separator, the default being `<newline>`.
 And POSIX says "If RS contains more than one character, the results are unspecified."

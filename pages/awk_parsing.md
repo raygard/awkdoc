@@ -5,8 +5,6 @@ nav_order: 4
 date:   2024-01-24 05:00:00 -0600
 ---
 
-# Writing an awk
-
 ## Parsing
 
 I wanted to try parsing awk using recursive descent along with Pratt's method of handling expression syntax.

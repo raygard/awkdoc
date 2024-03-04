@@ -1,13 +1,11 @@
 ---
-title:  Awk -- testing
+title:  Testing awk
 layout: page
 nav_order: 7
 date:   2024-01-24 05:00:00 -0600
 ---
 
-# Writing an awk
-
-## awk -- testing
+## Testing awk
 
 I've been testing `wak` against the other awk implementations I've been able to obtain.
 I have recent versions of `nnawk` (Kernighan's One True Awk, the original Unix awk updated), `gawk`, `mawk`, `goawk`, and `bbawk` (busybox awk).

@@ -1,5 +1,5 @@
 ---
-title:  Writing an awk
+title:  Runtime internals
 layout: page
 nav_order: 5
 date:   2024-01-24 05:00:00 -0600
