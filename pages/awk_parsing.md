@@ -1,7 +1,7 @@
 ---
 title:  Parsing awk
 layout: page
-nav_order: 3
+nav_order: 4
 date:   2024-01-24 05:00:00 -0600
 ---
 
@@ -42,7 +42,7 @@ By the time I got it working, the "nud" routine was also handling the `$` field 
 The supposed Pratt parser was looking more similar to a [precedence](https://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#climbing) [climbing](https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing) parser, though it still has a Pratt-like main loop routine for expressions and still uses "left binding power" and "right binding power" concepts from Pratt parsing.
 Consequently, I renamed the `nud` function to `primary()` and `led` function to `binary_op()`.
 
-I hacked code into the expression routine `exprn()` to handle the `if (1 < 2 && x = 3)` case mentioned in the previous post.
+I hacked code into the expression routine `exprn()` to handle the `if (1 < 2 && x = 3)` case mentioned in the [previous section](./awk_parsing_is_tricky.html).
 (This is also an issue for some similar cases, such as `1 && x = 3` and `2 < x = 3`.) 
 It's not elegant, but it seems to work correctly.
 
@@ -94,7 +94,7 @@ I had a nasty kluge of switches and state variables in place to deal with all th
 In the `getlbp()` function (that returns the Pratt left binding power), I have logic to say if the parser is inside a print/printf statement, and not inside parentheses, and has a `>` token, return 0, which will end any expression.
 Then the `>` will be correctly treated as a redirection operator.
 
-The `primary()` function returns the number of expressions in a parentheses-enclosed statement list, or 0 (or -1 for a potential lvalue, that is used to help with the `(1 && a = 2)` problem mentioned in the previous post).
+The `primary()` function returns the number of expressions in a parentheses-enclosed statement list, or 0 (or -1 for a potential lvalue, that is used to help with the `(1 && a = 2)` problem mentioned in the previous [previous section](./awk_parsing_is_tricky.html)).
 
 The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately a token that can end a print statement ('>', '>>', '|', ';', '}', or newline).
 If so, it returns the expression count from `primary()` to `print_stmt()`, otherwise it continues parsing what is expected to be the first (or possibly only) expression for the print statement.

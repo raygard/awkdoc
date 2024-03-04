@@ -1,7 +1,7 @@
 ---
 title:  Parsing awk is tricky
 layout: page
-nav_order: 4
+nav_order: 3
 date:   2024-01-24 05:00:00 -0600
 ---
 
