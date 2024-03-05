@@ -5,6 +5,10 @@ nav_order: 5
 date:   2024-01-24 05:00:00 -0600
 ---
 
+# Runtime internals
+
+Much more needed here...
+
 ## Function definition, call, return, stack frame design
 
 A function definition `function f(a, b, c,...) { ... }` generates:
@@ -67,13 +71,4 @@ At this point, the stack should have on it just the arguments, including the loc
 The `tkreturn` op loops through the locals not supplied by the caller, releasing any map (array) data and dropping the local "arg" from the stack.
 Now, only the args actually supplied by the caller remain on the stack, and these are dropped.
 Finally, the `ip` instruction pointer is set from the return address in the stack frame, the previous `parmbase` value is restored from the stack frame, and the runtime continues with the next instruction.
-
-## MORE NOTES
-
-In init_globals(), the stack slots have been reserved in init_compiler() (needed there to also init the globals function table).
-`STACK[CONVFMT]` is set at once because it's needed for conversion from string to number.
-
-Change nargs to argcnt ?
-
-compile.c at 212: zlist_append on stack? unneeded? or use push_val?
 
