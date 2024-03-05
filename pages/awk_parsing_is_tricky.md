@@ -98,7 +98,9 @@ This is despite the fact that the right side of a concatenation excludes an expr
 #### Case 3
 `BEGIN {$0 = "2 3 4"; $$0++; print}` prints `3`, except bbawk says "Unexpected token", and my awk as of this writing prints `2 4 4`.
 
-Which is "correct"? Apparently nawk, gawk, mawk, and goawk work as follows: in `$$0++`, the `$0` is `"2 3 4"` but the `++` forces it numeric, as 2, so the post-increment applies to `$0` which sets the entire record to 3. The subsequent outer `$` selects field 3 of `$0`, which does not exist, so the value of `$$0++` is the empty string.
+Which is "correct"?
+Apparently nawk, gawk, mawk, and goawk work as follows (bbawk gets a syntax error): in `$$0++`, the `$0` is `"2 3 4"` but the `++` forces it numeric, as 2, so the post-increment applies to `$0` which sets the entire record to 3.
+The subsequent outer `$` selects field 3 of `$0`, which does not exist, so the value of `$$0++` is the empty string.
 
 My awk tries to obey the precedence rules in POSIX, which have `$` at higher precedence than `++`, so evaluates `$$0` first as `$2`, selecting the second field, and then the `++` increments it to 4.
 

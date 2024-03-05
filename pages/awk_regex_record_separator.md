@@ -27,6 +27,7 @@ The problem was that I could get a partial match _near_ the end of buffer, and h
 For example, if the buffer ends with "ti1\ndw", the RS will match the "til\n".
 So I have to expand the buffer whenever the match is near the end of the buffer.
 How near, though?
+After some experimentation, I settled tentatively on a buffer with initial size 8192 byte and a "margin" 1024 bytes from the end.
 
 I wrote a program to stress test the awk versions on hand.
 I generated 8500 lines of data that looks like:

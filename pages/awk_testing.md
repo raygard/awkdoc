@@ -46,19 +46,21 @@ Each unique output is saved for later examination.
 For the `gawk`-style tests, the program can compare the output against the `foo.ok` file and give a pass/fail result.
 If there is a non-zero return code or an exception, that is noted on the `test_awk.py` output.
 The output looks like this:
-``` txt
-====versions====                 nnawk    gawk    mawk   goawk   bbawk   tbawk   muwak
-                                  ====    ====    ====    ====    ====    ====    ====
-Test delarpm2.awk              8841567 dd8e2e5   nnawk c992867    GAWK   GOAWK   GOAWK
-Test dfacheck1.awk             0000000 03a19ad   nnawk   nnawk    GAWK !3a19ad   TBAWK
-ERR: tbawk: awk: file tests/gawktests/dfacheck1.awk line 1: warning: '\<' -- unknown regex escape
 
+
+``` txt
+                               ======= ======= ======= ======= ======= ======= =======
+====versions====>>>>              gawk   nnawk    mawk   goawk   bbawk   tbawk   muwak
+                                  ====    ====    ====    ====    ====    ====    ====
+[...]
+Test delarpm2.awk              dd8e2e5 8841567   NNAWK c992867    gawk   GOAWK   GOAWK
+Test dfacheck1.awk             03a19ad 0000000   NNAWK   NNAWK    gawk !3a19ad   TBAWK
+ERR: tbawk: awk: file tests/gawktests/dfacheck1.awk line 1: warning: '\<' -- unknown regex escape
 ERR: muwak: muwak: file tests/gawktests/dfacheck1.awk line 1: warning: '\<' -- unknown regex escape
 
-
-Test double1.awk               819e6db 8c7dbdf    GAWK 351564a d97b6e5   BBAWK   BBAWK
-Test double2.awk               4941b67 4dbdb44    GAWK 7a665a2 acfcfe0 0124355   TBAWK
-Test dtdgport.awk              a916caa   nnawk   nnawk   nnawk !!00000   nnawk   nnawk
+Test double1.awk               8c7dbdf 819e6db    gawk 351564a d97b6e5   BBAWK   BBAWK
+Test double2.awk               4dbdb44 4941b67    gawk 7a665a2 acfcfe0 0124355   TBAWK
+Test dtdgport.awk              a916caa    gawk    gawk    gawk !!00000    gawk    gawk
 RET: bbawk: 1
 ERR: bbawk: awk: tests/gawktests/dtdgport.awk:37: %*x formats are not supported
 ```
@@ -69,11 +71,37 @@ In either case, the stderr output and return code are printed.
 These (non-pass-fail, non-timing) reports always display a hash value of the output for the first column (i.e. the first awk version tested).
 In subsequent columns, if the hash is different from the first column, that hash is listed; but if hash matches a hash from a previous column then the awk version is listed, and if it differs from the first column it is up-cased.
 
-So for example, for `delarpm2.awk`, `gawk` has a different output from `nnawk`, `mawk` matches `nnawk`, `goawk` has yet another different output, `bbawk` matches `gawk`, and both `tbawk` (toybox `awk` -- my awk for toybox) and `muwak` (my awk compiled with `musl` libc) match `goawk`.
-For `dfacheck1.awk`, `nnawk` produced no output, `gawk` gave some output, `mawk` and `goawk` also produced no output, `bbawk` matched `gawk`, `tbawk` produced the same output as `gawk` but had stderr output, and `muwak` matched `tbawk`, including having stderr output.
+So for example, for `delarpm2.awk`, `nnawk` has a different output from `gawk`, `mawk` matches `nnawk`, `goawk` has yet another different output, `bbawk` matches `gawk`, and both `tbawk` (toybox `awk` -- my awk for toybox) and `muwak` (my awk compiled with `musl` libc) match `goawk`.
+For `dfacheck1.awk`, `gawk` gave some output, `nnawk` produced no output, `mawk` and `goawk` also produced no output (matching nnawk), `bbawk` matched `gawk`, `tbawk` produced the same output as `gawk` but had stderr output, and `muwak` matched `tbawk`, including having stderr output.
 
 The `gawk` tests were originally intended to be run via the supplied `Makefile`, and some of them use special `gawk` options, environment setup, etc., so that when the `foo.awk` file is run by `test_awk.py` it may not produce correct `foo.ok` output even from `gawk`.
 Because of this, I sifted the output from all the `gawk` tests against all the awk versions into several parts and moved the tests into corresponding folders: `gawktests\allfail` has tests that fail for all versions, including `gawk`; `gawktests\allpass` has tests that pass for all versions; `gawktests\gawkonly` has tests that pass for `gawk` and fail for all others (usually because they use gawk-only features); and `gawktests` has all the remaining tests.
 
+I also wrote a shell script and awk script to sift the resulting test output files into several categories.
+I usually have test results in colums for gawk, nnawk, mawk, goawk, bbawk, my awk within toybox (tbawk), and my awk standalone (may be compiled with ASAN sanitizer, or with musl lib, or some other version).
+The order is significant because I consider my result golden if it matches both gawk and nnawk, still good if it matches gawk or nawk, less good if it matches (only) mawk, goawk or bbawk.
+If my awks (last two columns) differ, they go into a `set_y` file; that's usually a result of `for (element in array)` iterating the array in random order (as all awks currently do). (An annoyance for testing is that goawk doesn't usually do it the same way on different runs due to golang's intentionally random hash behavior that apparently cannot be turned off.)
+If any "allfail" tests do not all fail, or any "allpass" tests do not all pass, or any "gawkonly" tests do not pass only for gawk, they go into separate files.
+If a test is pass/fail, then I put tests that my awk fails into a `set_fail` file; if it passes and both gawk and nawk pass, it goes into an `set_ok` file; if it matches gawk or nawk it goes into a `set_1` or `set_2` file, otherwise it goes into a general `set_pass` file.
+If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_ok` file, else if it matches gawk it goes into the `set_1` file; else if matches nawk it goes into the `set_2` file, else if it matches mawk, goawk, or bbawk it goes into a `set_3`, `set_4`, or `set_5` file respectively.
+If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_x` file.
+
+So the `set_x` file needs the closest scrutiny, as those are most likely bugs in my implementation.
+Currently, I have 32 tests in that bucket out of 1180 tests run.
+Here is an approximate breakdown of the current test results:
+
+| ----- | -- |
+| set_1 | 86 |
+| set_2 | 158 |
+| set_3 | 52 |
+| set_4 | 8 |
+| set_5 | 13 |
+| set_badfail | 2 |
+| set_badpass | 2 |
+| set_fail | 48 |
+| set_ok | 735 |
+| set_pass | 13 |
+| set_x | 32 |
+| set_y | 31 |
 
 
