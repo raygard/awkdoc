@@ -69,13 +69,13 @@ If the output is an empty file, the MD5 is replaced with all zeroes to make it e
 If any stderr output occurs, the first digit is replaced with a '!'; if a non-zero return code occurs, the second digit is replaced with '!'.
 In either case, the stderr output and return code are printed.
 These (non-pass-fail, non-timing) reports always display a hash value of the output for the first column (i.e. the first awk version tested).
-In subsequent columns, if the hash is different from the first column, that hash is listed; but if hash matches a hash from a previous column then the awk version is listed, and if it differs from the first column it is up-cased.
+In subsequent columns, if the hash is different from the first column, that hash is listed; but if hash matches a hash from a previous column then the awk version of that column is listed, and if it differs from the first column it is up-cased.
 
 So for example, for `delarpm2.awk`, `nnawk` has a different output from `gawk`, `mawk` matches `nnawk`, `goawk` has yet another different output, `bbawk` matches `gawk`, and both `tbawk` (toybox `awk` -- my awk for toybox) and `muwak` (my awk compiled with `musl` libc) match `goawk`.
 For `dfacheck1.awk`, `gawk` gave some output, `nnawk` produced no output, `mawk` and `goawk` also produced no output (matching nnawk), `bbawk` matched `gawk`, `tbawk` produced the same output as `gawk` but had stderr output, and `muwak` matched `tbawk`, including having stderr output.
 
 The `gawk` tests were originally intended to be run via the supplied `Makefile`, and some of them use special `gawk` options, environment setup, etc., so that when the `foo.awk` file is run by `test_awk.py` it may not produce correct `foo.ok` output even from `gawk`.
-Because of this, I sifted the output from all the `gawk` tests against all the awk versions into several parts and moved the tests into corresponding folders: `gawktests\allfail` has tests that fail for all versions, including `gawk`; `gawktests\allpass` has tests that pass for all versions; `gawktests\gawkonly` has tests that pass for `gawk` and fail for all others (usually because they use gawk-only features); and `gawktests` has all the remaining tests.
+Because of this, I sifted the output from all the `gawk` tests against all the awk versions into several parts and moved the tests into corresponding folders: `gawktests/allfail` has tests that fail for all versions, including `gawk`; `gawktests/allpass` has tests that pass for all versions; `gawktests/gawkonly` has tests that pass for `gawk` and fail for all others (usually because they use gawk-only features); and `gawktests` has all the remaining tests.
 
 I also wrote a shell script and awk script to sift the resulting test output files into several categories.
 I usually have test results in colums for gawk, nnawk, mawk, goawk, bbawk, my awk within toybox (tbawk), and my awk standalone (may be compiled with ASAN sanitizer, or with musl lib, or some other version).

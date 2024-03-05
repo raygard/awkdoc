@@ -94,7 +94,7 @@ Then the `>` will be correctly treated as a redirection operator.
 
 The `primary()` function returns the number of expressions in a parentheses-enclosed statement list, or 0 (or -1 for a potential lvalue, that is used to help with the `(1 && a = 2)` problem mentioned in the previous [previous section](./awk_parsing_is_tricky.html)).
 
-The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately a token that can end a print statement ('>', '>>', '|', ';', '}', or newline).
+The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately a token that can end a print statement ('>', '>&#x200B;>', '|', ';', '}', or newline).
 If so, it returns the expression count from `primary()` to `print_stmt()`, otherwise it continues parsing what is expected to be the first (or possibly only) expression for the print statement.
 
 I believe this correctly handles the print/printf statement.
