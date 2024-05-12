@@ -80,15 +80,23 @@ Because of this, I sifted the output from all the `gawk` tests against all the a
 I also wrote a shell script and awk script to sift the resulting test output files into several categories.
 I usually have test results in colums for gawk, nnawk, mawk, goawk, bbawk, my awk within toybox (tbawk), and my awk standalone (may be compiled with ASAN sanitizer, or with musl lib, or some other version).
 The order is significant because I consider my result golden if it matches both gawk and nnawk, still good if it matches gawk or nawk, less good if it matches (only) mawk, goawk or bbawk.
-If my awks (last two columns) differ, they go into a `set_mismatch` file; that's usually a result of `for (element in array)` iterating the array in random order (as all awks currently do). (An annoyance for testing is that goawk doesn't usually do it the same way on different runs due to golang's intentionally random hash behavior that apparently cannot be turned off.)
-If any "allfail" tests do not all fail, or any "allpass" tests do not all pass, or any "gawkonly" tests do not pass only for gawk, they go into separate files.
-If a test is pass/fail, then I put tests that my awk fails into a `set_fail` file; if it passes and both gawk and nawk pass, it goes into an `set_good` file; if it matches gawk or nawk it goes into a `set_gawk` or `set_nawk` file, otherwise it goes into a general `set_pass` file (or set_passx if it passed but had stderr output or non-zero exit code).
-If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_good` file, else if it matches gawk it goes into the `set_gawk` file; else if matches nawk it goes into the `set_nawk` file, else if it matches mawk, goawk, or bbawk it goes into a `set_mawk`, `set_goawk`, or `set_bbawk` file respectively.
-If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_odd` file.
 
-So the `set_odd` file needs the closest scrutiny, as those are likely bugs in my implementation, though some differ from gawk and/or nawk only in that they have stderr output, usually warnings.
+If my awks (last two columns) differ, they go into a `set_mismatch` file; that's usually a result of the difference in random generators, or due to differences (bugs?) in the musl regex functions.
+
+If any "allfail" tests do not all fail, or any "allpass" tests do not all pass, or any "gawkonly" tests do not pass only for gawk, they go into separate files.
+
+If a test is pass/fail, then I put tests that my awk fails into a `set_fail` file; if it passes and both gawk and nawk pass, it goes into an `set_good` file; if it matches gawk or nawk it goes into a `set_gawk` or `set_nawk` file, otherwise it goes into a general `set_pass` file (or set_passx if it passed but had stderr output or non-zero exit code).
+
+If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_good` file, else if it matches gawk it goes into the `set_gawk` file; else if matches nawk it goes into the `set_nawk` file, else if it matches mawk, goawk, or bbawk it goes into a `set_mawk`, `set_goawk`, or `set_bbawk` file respectively.
+
+If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_odd` file.
+The `set_odd` file needs the closest scrutiny, as those are possible bugs in my implementation, though some differ from gawk and/or nawk only in that they have stderr output, usually warnings.
+Some others are due to different implementations iterating over arrays in different orders.
+(An annoyance for testing is that goawk doesn't usually traverse arrays the same way on different runs due to golang's intentionally random hash behavior that apparently cannot be turned off.)
 
 Currently, I have 30 tests in the `set_odd` category out of 1182 tests run.
+I believe only a relative few of these are actual bugs.
+
 Here is an approximate breakdown of the current test results:
 
 | category | count |
@@ -107,3 +115,9 @@ Here is an approximate breakdown of the current test results:
 | set_badgawkonly | 1 |
 | set_mismatch | 38 |
 | set_odd | 30 |
+
+To put the 47 `set_fail` results in perspective, all but two of those are also failed by at least one of gawk, nnawk, mawk, or goawk.
+Of those two others, both are also failed by bbawk.
+Still, I would like to make wak/toybox awk work on more of those cases as well.
+
+Also, the tests need some cleanup; there is some overlap and duplication.

@@ -154,3 +154,11 @@ Dick Grune's [Annotated Bibliography](https://dickgrune.com/Books/PTAPG_2nd_Edit
 Lett., 6:113–115, 1977.
 > Proposes an extremely simple(minded) error recovery method for recursive descent parsers: when an error occurs, the parser enters a recovering state. While in this recovering state, error messages are inhibited. Apart from that, the parser proceeds until it requires a definite symbol. Then, symbols are skipped until this symbol is found or the end of the input is reached. Because this method can result in a lot of skipping, some fine-tuning can be applied.
 
+### Code generation
+
+Code is generated directly in the parser, using functions `gencd()` and `gen2cd()`.
+These take one or two arguments, an opcode and (for `gen2cd()`) an operand.
+These are integers that are simply appended to the `zcode` zlist, which expands as needed.
+The opcodes are usually the same as the tokens representing the program element involved, for example, `tkmul` to multiply the top two values on the stack and replace them with the product.
+There are also about 25 additional opcodes that don't correspond to an awk token, such as `oppush`, `opdrop` (stack manipulation), `opjump`, `opjumptrue` (unconditional and conditional jump in the zcode program), etc.
+The zcode machine and its operations are kept simple and no attempt is made to do code optimization, in order to keep the implementation small.

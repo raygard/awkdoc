@@ -99,6 +99,10 @@ The current `wak` lexical analyzer, `scan.c`, is about 300 LOC (counting non-bla
 It's a fairly typical scanner design, with functions to get tokens (numbers, strings, variables, keywords, regular expressions), look up keywords, etc.
 It also handles reading the program text given on the command line or stepping through the files of awk code specified on the command line.
 
+The state of the scanner is maintained in a global of type `struct scanner_state`, updated as each token is scanned.
+This includes the state of the file being read (name, line number, etc) and the particular token scanned and information about the token.
+The tokens are signified by integer values from an enum with names of the form `tk...` such as tkfor, tkwhile, tklt (<), tknumber, tkstring, etc.
+
 One interesting detail is the handling of regular expressions (hereafter just "regex").
 The language allows literal regex specified as `/ ... regex here .../`.
 The `/` symbol also indicates division, and `/=` is the divide-and-assign operator, just as in C.
