@@ -88,22 +88,22 @@ If it doesn't fit into any of those buckets, then it doesn't match any other imp
 
 So the `set_odd` file needs the closest scrutiny, as those are likely bugs in my implementation, though some differ from gawk and/or nawk only in that they have stderr output, usually warnings.
 
-Currently, I have 66 tests in the `set_odd` category out of 1458 tests run.
+Currently, I have 30 tests in the `set_odd` category out of 1182 tests run.
 Here is an approximate breakdown of the current test results:
 
 | category | count |
 | ----- | --- |
-| set_good | 780 |
-| set_gawk | 127 |
-| set_nawk | 190 |
-| set_mawk | 74 |
-| set_goawk | 20 |
-| set_bbawk | 34 |
-| set_fail | 51 |
-| set_pass | 6 |
-| set_passx | 15 |
-| set_badfail | 6 |
-| set_badpass | 6 |
+| set_good | 736 |
+| set_gawk | 87 |
+| set_nawk | 158 |
+| set_mawk | 50 |
+| set_goawk | 8 |
+| set_bbawk | 10 |
+| set_pass | 2 |
+| set_passx | 11 |
+| set_fail | 47 |
+| set_badpass | 2 |
+| set_badfail | 2 |
 | set_badgawkonly | 1 |
-| set_mismatch | 82 |
-| set_odd | 66 |
+| set_mismatch | 38 |
+| set_odd | 30 |
