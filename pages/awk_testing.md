@@ -86,11 +86,13 @@ If a test is pass/fail, then I put tests that my awk fails into a `set_fail` fil
 If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_good` file, else if it matches gawk it goes into the `set_gawk` file; else if matches nawk it goes into the `set_nawk` file, else if it matches mawk, goawk, or bbawk it goes into a `set_mawk`, `set_goawk`, or `set_bbawk` file respectively.
 If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_odd` file.
 
-So the `set_odd` file needs the closest scrutiny, as those are likely bugs in my implementation.
-Currently, I have 66 tests in that bucket out of 1458 tests run.
+So the `set_odd` file needs the closest scrutiny, as those are likely bugs in my implementation, though some differ from gawk and/or nawk only in that they have stderr output, usually warnings.
+
+Currently, I have 66 tests in the `set_odd` category out of 1458 tests run.
 Here is an approximate breakdown of the current test results:
 
-| ----- | -- |
+| category | count |
+| ----- | --- |
 | set_good | 780 |
 | set_gawk | 127 |
 | set_nawk | 190 |
@@ -100,15 +102,8 @@ Here is an approximate breakdown of the current test results:
 | set_fail | 51 |
 | set_pass | 6 |
 | set_passx | 15 |
-| ----- | -- |
 | set_badfail | 6 |
 | set_badpass | 6 |
 | set_badgawkonly | 1 |
-| ----- | -- |
 | set_mismatch | 82 |
 | set_odd | 66 |
-| ----- | -- |
-
-
-
-
