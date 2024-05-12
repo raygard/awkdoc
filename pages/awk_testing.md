@@ -80,28 +80,35 @@ Because of this, I sifted the output from all the `gawk` tests against all the a
 I also wrote a shell script and awk script to sift the resulting test output files into several categories.
 I usually have test results in colums for gawk, nnawk, mawk, goawk, bbawk, my awk within toybox (tbawk), and my awk standalone (may be compiled with ASAN sanitizer, or with musl lib, or some other version).
 The order is significant because I consider my result golden if it matches both gawk and nnawk, still good if it matches gawk or nawk, less good if it matches (only) mawk, goawk or bbawk.
-If my awks (last two columns) differ, they go into a `set_y` file; that's usually a result of `for (element in array)` iterating the array in random order (as all awks currently do). (An annoyance for testing is that goawk doesn't usually do it the same way on different runs due to golang's intentionally random hash behavior that apparently cannot be turned off.)
+If my awks (last two columns) differ, they go into a `set_mismatch` file; that's usually a result of `for (element in array)` iterating the array in random order (as all awks currently do). (An annoyance for testing is that goawk doesn't usually do it the same way on different runs due to golang's intentionally random hash behavior that apparently cannot be turned off.)
 If any "allfail" tests do not all fail, or any "allpass" tests do not all pass, or any "gawkonly" tests do not pass only for gawk, they go into separate files.
-If a test is pass/fail, then I put tests that my awk fails into a `set_fail` file; if it passes and both gawk and nawk pass, it goes into an `set_ok` file; if it matches gawk or nawk it goes into a `set_1` or `set_2` file, otherwise it goes into a general `set_pass` file.
-If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_ok` file, else if it matches gawk it goes into the `set_1` file; else if matches nawk it goes into the `set_2` file, else if it matches mawk, goawk, or bbawk it goes into a `set_3`, `set_4`, or `set_5` file respectively.
-If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_x` file.
+If a test is pass/fail, then I put tests that my awk fails into a `set_fail` file; if it passes and both gawk and nawk pass, it goes into an `set_good` file; if it matches gawk or nawk it goes into a `set_gawk` or `set_nawk` file, otherwise it goes into a general `set_pass` file (or set_passx if it passed but had stderr output or non-zero exit code).
+If it's not pass/fail, then if my result matches gawk and nawk, it goes into a `set_good` file, else if it matches gawk it goes into the `set_gawk` file; else if matches nawk it goes into the `set_nawk` file, else if it matches mawk, goawk, or bbawk it goes into a `set_mawk`, `set_goawk`, or `set_bbawk` file respectively.
+If it doesn't fit into any of those buckets, then it doesn't match any other implementation, and goes into a `set_odd` file.
 
-So the `set_x` file needs the closest scrutiny, as those are most likely bugs in my implementation.
-Currently, I have 32 tests in that bucket out of 1180 tests run.
+So the `set_odd` file needs the closest scrutiny, as those are likely bugs in my implementation.
+Currently, I have 66 tests in that bucket out of 1458 tests run.
 Here is an approximate breakdown of the current test results:
 
 | ----- | -- |
-| set_1 | 86 |
-| set_2 | 158 |
-| set_3 | 52 |
-| set_4 | 8 |
-| set_5 | 13 |
-| set_badfail | 2 |
-| set_badpass | 2 |
-| set_fail | 48 |
-| set_ok | 735 |
-| set_pass | 13 |
-| set_x | 32 |
-| set_y | 31 |
+| set_good | 780 |
+| set_gawk | 127 |
+| set_nawk | 190 |
+| set_mawk | 74 |
+| set_goawk | 20 |
+| set_bbawk | 34 |
+| set_fail | 51 |
+| set_pass | 6 |
+| set_passx | 15 |
+| ----- | -- |
+| set_badfail | 6 |
+| set_badpass | 6 |
+| set_badgawkonly | 1 |
+| ----- | -- |
+| set_mismatch | 82 |
+| set_odd | 66 |
+| ----- | -- |
+
+
 
 

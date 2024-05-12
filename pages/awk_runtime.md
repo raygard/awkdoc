@@ -64,7 +64,7 @@ Finally, the `tkfunc` op pushes the arg count on the stack and sets the `ip` (zc
 It then pops the arg count (number of actual arguments) from the stack, calculates the new parmbase (stack top index minus arg count), stores the previous parmbase in the stack frame, and sets `parmbase` to the new parmbase.
 Next, it loops to drop excess calling arguments if more args have been supplied in the call than there are params defined for the function. (NOTE: This is an error and should be caught at compile time! FIXME)
 Then, if the number of supplied args is less than the number of defined params, additional "args" are pushed to be used as local variables by the function.
-This is where the "maybe map" variables may have to be created, as explained elsewhere [FIXME WHERE?].
+This is where the "maybe map" variables may have to be created, as explained in "Parsing awk".
 
 When the function returns, either via a `return` keyword or "falling off the end" of the function (where a `tkreturn` op has been compiled), the `tkreturn` op picks up the param count (from the `tkreturn number_of_params` code sequence) [NOTE this is unused; remove it? FIXME], gets the arg count from the stack frame, and copies the return value from the stack into the return value slot in the stack frame, and drops the return value from the stack.
 At this point, the stack should have on it just the arguments, including the locals created beyond the args supplied.

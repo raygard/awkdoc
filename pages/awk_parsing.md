@@ -30,7 +30,7 @@ So I could not see how to have `++` and `--` as both prefix and postfix operator
 Then I saw that if they followed an lvalue they were always taken as postfix.
 I modified my "nud" routine, which was handling prefix operators, to also consume `++` / `--` operators if they followed an lvalue.
 
-I also had my main expression routine `exprn()` looking for the start of an expression where it could be the right side of a concatenation.
+I also had my main expression routine `expr()` looking for the start of an expression where it could be the right side of a concatenation.
 Note that the right side cannot start with `+` or `-`, or there will be confusion between `a + b` and `a` (concatenated with) `+ b`.
 If you look at the [POSIX grammar](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html#tag_20_06_13_16) for awk, you'll see a long list of nearly identical productions for `unary_expr` and `non_unary_expr`, that are needed solely to exclude the right side of a concatenation beginning with unary `+` or `-`.
 There is nothing like that in the yacc grammar for nawk/nnawk/OneTrueAwk, and I'm not clear on how yacc handles this.
@@ -40,7 +40,7 @@ By the time I got it working, the "nud" routine was also handling the `$` field 
 The supposed Pratt parser was looking more similar to a [precedence](https://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#climbing) [climbing](https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing) parser, though it still has a Pratt-like main loop routine for expressions and still uses "left binding power" and "right binding power" concepts from Pratt parsing.
 Consequently, I renamed the `nud` function to `primary()` and `led` function to `binary_op()`.
 
-I hacked code into the expression routine `exprn()` to handle the `if (1 < 2 && x = 3)` case mentioned in the [previous section](./awk_parsing_is_tricky.html).
+I hacked code into the expression routine `expr()` to handle the `if (1 < 2 && x = 3)` case mentioned in the [previous section](./awk_parsing_is_tricky.html).
 (This is also an issue for some similar cases, such as `1 && x = 3` and `2 < x = 3`.) 
 It's not elegant, but it seems to work correctly.
 
@@ -94,7 +94,7 @@ Then the `>` will be correctly treated as a redirection operator.
 
 The `primary()` function returns the number of expressions in a parentheses-enclosed statement list, or 0 (or -1 for a potential lvalue, that is used to help with the `(1 && a = 2)` problem mentioned in the previous [previous section](./awk_parsing_is_tricky.html)).
 
-The `print_stmt()` function calls the expression parser as `exprn(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the `exprn()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately by a token that can end a print statement ('>', '>&#x200B;>', '|', ';', '}', or newline).
+The `print_stmt()` function calls the expression parser as `expr(CALLED_BY_PRINT)`, where `CALLED_BY_PRINT` is a "magic" value that flags the `expr()` function to see if the initial `primary()` call returns a statement list (>= 2) followed immediately by a token that can end a print statement ('>', '>&#x200B;>', '|', ';', '}', or newline).
 If so, it returns the expression count from `primary()` to `print_stmt()`, otherwise it continues parsing what is expected to be the first (or possibly only) expression for the print statement.
 
 I believe this correctly handles the print/printf statement.
