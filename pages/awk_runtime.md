@@ -9,6 +9,23 @@ date:   2024-01-24 05:00:00 -0600
 
 Much more needed here...
 
+## Stack
+
+The runtime stack is a `zlist` of `zvalue` structs.
+All variables and temporary values are stored on the stack.
+The "special variables" (`FS`, `NF`, `RS`, `CONVFMT`, etc.) are stored at the bottom of the stack.
+Program globals are stored above that.
+As the program runs, values are pushed, popped, operated on, etc.
+Function call arguments and other related information, including variables local to functions, are put on the stack as well, as discussed below.
+
+In earlier versions, the `zlist_append()` function was called for every stack push.
+This ensured that the stack would never overflow unless memory is exhausted, but profiling showed that this was expensive.
+Now, a healthy margin of stack is checked (only) at every function call, where the stack will be expanded as needed to ensure the margin is maintained.
+Nearly all awk statements will be "stack neutral", so the stack is at the same point before and after a statement except for function calls.
+One exception is `for (index in array)...`, which maintains some array iteration information on the stack inside the `for` loop.
+The margin `MIN_STACK_LEFT` (currently 1024) ensures that only a pathological statement will be able to overflow the stack, but it is possible.
+It is possible to analyze the maximum stack usage for each statement during compilation, and avoid any possibility of overflow, but I believe it is not worth the added complexity.
+
 ## Function definition, call, return, stack frame design
 
 A function definition `function f(a, b, c,...) { ... }` generates:
