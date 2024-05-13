@@ -44,7 +44,7 @@ I have a not-very-neat test driver `test_awk.py` that I can use to run a batch o
 In the case of `testdir`'s `p.*` and `t.*` files, they are intended to use certain input files (`test.countries` and `test.data`), and the outputs are compared via MD5 hashes.
 Each unique output is saved for later examination.
 For the `gawk`-style tests, the program can compare the output against the `foo.ok` file and give a pass/fail result.
-If there is a non-zero return code or an exception, that is noted on the `test_awk.py` output.
+If there is a non-zero exit code or an exception, that is noted on the `test_awk.py` output.
 The output looks like this:
 
 
@@ -66,8 +66,8 @@ ERR: bbawk: awk: tests/gawktests/dtdgport.awk:37: %*x formats are not supported
 ```
 The hex values are the first 7 digits of the MD5 of the output file.
 If the output is an empty file, the MD5 is replaced with all zeroes to make it easier to spot.
-If any stderr output occurs, the first digit is replaced with a '!'; if a non-zero return code occurs, the second digit is replaced with '!'.
-In either case, the stderr output and return code are printed.
+If any stderr output occurs, the first digit is replaced with a '!'; if a non-zero exit code occurs, the second digit is replaced with '!'.
+In either case, the stderr output (ERR:) and exit code (RET:) are printed.
 These (non-pass-fail, non-timing) reports always display a hash value of the output for the first column (i.e. the first awk version tested).
 In subsequent columns, if the hash is different from the first column, that hash is listed; but if hash matches a hash from a previous column then the awk version of that column is listed, and if it differs from the first column it is up-cased.
 
